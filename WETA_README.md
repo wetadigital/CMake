@@ -5,6 +5,15 @@ This repo is activly synced from [The OSS upstream (external)](https://github.co
 It is also possible to push changes to the [Wētā FX external fork](https://github.com/wetadigital/CMake), allowing 
 for contributions to flow back to the ASFW repo (via Pull Request).
 
+Required Setup
+--------------
+
+After cloning this repo, cmake's standard comit hooks need to be installed.
+
+In order to install these hook, please run [Utilities/SetupForDevelopment.sh](Utilities/SetupForDevelopment.sh).
+
+This only needs to be run once after cloning.
+
 
 Legalities
 ----------
@@ -97,20 +106,5 @@ How to release
 On Gitlab - create a tag on the relevant `weta/RB-X.Y.Z` branch, representing your
 version you want to release e.g. `weta/x.y.z-weta.w`
 
-Create a /src folder for the release you're going to make 
-
-    setenv MYVERSION = 'x.y.z-weta.w'
-    mkdir /vol/weta/linux64/CMake/${MYVERSION}
-    mkdir /vol/weta/linux64/CMake/${MYVERSION}/src
-    cd /vol/weta/linux64/CMake/${MYVERSION}/src
-    git clone gitlab@gitlab.wetafx.co.nz:habitat/platform/oss/CMake.git .
-
-Check out the tag you want to release 
-
-    git checkout weta/x.y.z-weta.w
-
-Set up environment & Release
-    
-    oz / --using /weta/software/dev --cwd 
-    waf release --ver ${MYVERSION}
+This tag will run the release via CI!
      
