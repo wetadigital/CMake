@@ -11,6 +11,12 @@ macro(find_package_provider method package_name)
   set(${package_name}_FOUND TRUE)
 endmacro()
 
+macro(find_package_provider_always_fail method package_name)
+  message(STATUS "Intercepted find_package(${package_name})")
+  message(STATUS "Provider invoked for method ${method} with args: ${ARGN}")
+  set(${package_name}_FOUND FALSE)
+endmacro()
+
 macro(FetchContentSerial_provider method dep_name)
   message(STATUS "Intercepted FetchContent_MakeAvailable(${dep_name})")
   message(STATUS "Provider invoked for method ${method} with args: ${ARGN}")

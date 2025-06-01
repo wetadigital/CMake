@@ -1139,6 +1139,40 @@ bool cmFindPackageCommand::FindPackage(
     }
     this->ConsideredPaths.emplace_back(searchPath, FoundPackageMode::Provider,
                                        SearchResult::NotFound);
+
+    std::string const disableBuiltinSearch =
+      "CMAKE_WETA_PROVIDER_DISABLE_BUILTIN_SEARCH";
+    if(this->Makefile->IsOn(disableBuiltinSearch))
+    {
+
+      std::ostringstream e;
+
+
+      e << "Could not find package \"" << this->Name << "\" via the configured "
+        << "provider and fallback to the default search is disabled.\n";
+
+      std::string const notFoundMessageVar =
+        cmStrCat(this->Name, "_NOT_FOUND_MESSAGE");
+
+      const std::string& notFoundMessage =
+        this->Makefile->GetSafeDefinition(notFoundMessageVar);
+
+      if (!notFoundMessage.empty()) {
+        e << "Reason given by the provider: \n" << notFoundMessage;
+      }
+
+      if (!this->Quiet) {
+        this->Makefile->IssueMessage(
+          this->IsRequired() ? MessageType::FATAL_ERROR : MessageType::WARNING,
+          e.str());
+        if (this->IsRequired()) {
+          cmSystemTools::SetFatalErrorOccurred();
+        }
+      }
+
+      // This indicates an error. Return True if not required
+      return !this->IsRequired();
+    }
   }
 
   // Limit package nesting depth well below the recursion depth limit because

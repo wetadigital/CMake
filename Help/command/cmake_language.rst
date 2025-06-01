@@ -316,8 +316,12 @@ be one of the ``<methods>`` that was specified when setting the provider.
   that :command:`find_package` expects to be set.  For a dependency named
   ``depName``, the provider must set ``depName_FOUND`` to true if it fulfilled
   the request.  If the provider returns without setting this variable, CMake
-  will assume the request was not fulfilled and will fall back to the
-  built-in implementation.
+  will assume the request was not fulfilled.
+
+  .. versionadded:: 4.0.2-weta.1
+    If the request is not fulfilled, cmake will default to falling back to the built-in implementation. It is possible
+    to override this behaviour by setting ``CMAKE_WETA_PROVIDER_DISABLE_BUILTIN_SEARCH``. When this variable is set, the
+    provider can use ``<PackageName>_NOT_FOUND_MESSAGE`` to communicate why the given package was not found.
 
   If the provider needs to call the built-in :command:`find_package`
   implementation as part of its processing, it can do so by including the
