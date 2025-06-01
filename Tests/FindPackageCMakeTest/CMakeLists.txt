@@ -16,12 +16,24 @@ find_package(ZLIB QUIET)
 
 # Look for a package that has a find module and may be found.
 find_package(OpenGL QUIET)
+if(OpenGL_CONFIG OR NOT OpenGL_MODULE)
+    message(SEND_ERROR "Did not found OpenGL in MODULE mode")
+endif()
 
 # Look for a package that has no find module and will not be found.
 find_package(NotAPackage QUIET)
+if(NotAPackage_CONFIG OR NotAPackage_MODULE)
+    message(SEND_ERROR "Incorrectly set CONFIG or MODULE variables for a package that was not found")
+endif()
 
 # Look for a package that has an advanced find module.
 find_package(Boost QUIET)
+if(NOT Boost_MODULE)
+    # Boost will set both a module and a config, as the module has a policy that disables it.
+    # As the basic signature used above searches modules first, and then configs, this will fall back to the config mode
+    # after the module has failed.
+    message(SEND_ERROR "Did not found Boost in MODULE mode")
+endif()
 
 add_executable(FindPackageCMakeTest FindPackageTest.cxx)
 
@@ -627,6 +639,9 @@ endif()
 if(ABC_CONFIG)
     message(SEND_ERROR "Incorrectly found ABC in CONFIG mode, expected to find it with MODULE mode")
 endif()
+if(NOT ABC_MODULE)
+    message(SEND_ERROR "Did not found ABC in MODULE mode")
+endif()
 
 # Now prefer config mode
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
@@ -639,6 +654,9 @@ if(NOT ABC_FOUND)
 endif()
 if(NOT ABC_CONFIG)
     message(SEND_ERROR "Incorrectly found ABC in MODULE mode, expected to find it with CONFIG mode")
+endif()
+if(NOT ABC_MODULE)
+  message(SEND_ERROR "Did not found ABC in MODULE mode")
 endif()
 
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG OFF)

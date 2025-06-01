@@ -59,6 +59,9 @@ The command has a few modes by which it searches for packages:
   messages.  Some Find modules provide limited or no support for versioning;
   check the Find module's documentation.
 
+  .. versionadded:: 4.0.2-weta.1
+    The full path to the module file is stored in the CMake variable ``<PackageName>_MODULE``.
+
   The ``Find<PackageName>.cmake`` file is not typically provided by the
   package itself.  Rather, it is normally provided by something external to
   the package, such as the operating system, CMake itself, or even the project

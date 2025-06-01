@@ -1516,6 +1516,9 @@ bool cmFindPackageCommand::FindModule(bool& found)
         }
       }
     }
+    
+    std::string const fileVar = cmStrCat(this->Name, "_MODULE");
+    this->Makefile->AddDefinition(fileVar, mfile);
 
     // Load the module we found, and set "<name>_FIND_MODULE" to true
     // while inside it.
