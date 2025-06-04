@@ -143,8 +143,9 @@ def build(bld):
         'license': 'BSD-3-Clause'
     }
 
-    bld.setOzAppDetails(
-        app=f'{bld.env.WAK_APP_NAME}',
-        options=app_options,
-        description='set/refresh the app metadata'
-    )
+    if bld.isRelease():
+        bld.setOzAppDetails(
+            app=f'{bld.env.WAK_APP_NAME}',
+            options=app_options,
+            description='set/refresh the app metadata'
+        )
