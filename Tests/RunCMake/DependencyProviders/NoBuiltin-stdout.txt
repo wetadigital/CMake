@@ -1,0 +1,4 @@
+-- Before cmake_language
+-- After cmake_language
+-- Intercepted find_package\(DoesNotExist\)
+-- Provider invoked for method FIND_PACKAGE with args:

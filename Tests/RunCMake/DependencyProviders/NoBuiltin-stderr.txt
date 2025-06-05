@@ -1,0 +1,3 @@
+CMake Warning at NoBuiltinOptional.cmake:1 \(find_package\):
+  Could not find package "DoesNotExist" via the configured provider and
+  fallback to the default search is disabled\.
