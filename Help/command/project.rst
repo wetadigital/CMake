@@ -88,6 +88,7 @@ The options are:
     :variable:`CMAKE_PROJECT_VERSION`.
 
 ``COMPAT_VERSION <version>``
+  .. versionadded:: 4.1
   .. note::
 
     Experimental. Gated by ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``.
@@ -148,8 +149,12 @@ By default ``C`` and ``CXX`` are enabled if no language options are given.
 Specify language ``NONE``, or use the ``LANGUAGES`` keyword and list no languages,
 to skip enabling any languages.
 
-The variables set through the ``VERSION``, ``DESCRIPTION`` and ``HOMEPAGE_URL``
-options are intended for use as default values in package metadata and documentation.
+The variables set through the ``VERSION``, ``COMPAT_VERSION``, ``DESCRIPTION``
+and ``HOMEPAGE_URL`` options are intended for use as default values in package
+metadata and documentation. The :command:`export` and :command:`install`
+commands use these accordingly when generating |CPS| package descriptions.
+
+.. |CPS| replace:: Common Package Specification
 
 .. _`Code Injection`:
 

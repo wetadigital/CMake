@@ -712,7 +712,7 @@ following options:
   specific cache variable will be evaluated to decide, if package restoration
   should be performed.
 
-  When using the Visual Studio generator, package references are defined
+  When using :ref:`Visual Studio Generators`, package references are defined
   using the :prop_tgt:`VS_PACKAGE_REFERENCES` property. Package references
   are restored using NuGet. It can be disabled by setting the
   ``CMAKE_VS_NUGET_PACKAGE_RESTORE`` variable to ``OFF``.
@@ -735,6 +735,19 @@ following options:
   Pass remaining options to the native tool.
 
 Run :option:`cmake --build` with no options for quick help.
+
+Generator-Specific Build Tool Behavior
+--------------------------------------
+
+``cmake --build`` has special behavior with some generators:
+
+:generator:`Xcode`
+
+  .. versionadded:: 4.1
+
+    If a third-party tool has written a ``.xcworkspace`` next to
+    the CMake-generated ``.xcodeproj``, ``cmake --build`` drives
+    the build through the workspace instead.
 
 Install a Project
 =================

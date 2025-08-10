@@ -98,6 +98,8 @@ Policies Introduced by CMake 4.1
 .. toctree::
    :maxdepth: 1
 
+   CMP0197: MSVC link -machine: flag is not in CMAKE_*_LINKER_FLAGS. </policy/CMP0197>
+   CMP0196: The CMakeDetermineVSServicePack module is removed. </policy/CMP0196>
    CMP0195: Swift modules in build trees use the Swift module directory structure. </policy/CMP0195>
    CMP0194: MSVC is not an assembler for language ASM. </policy/CMP0194>
    CMP0193: GNUInstallDirs caches CMAKE_INSTALL_* with leading 'usr/' for install prefix '/'. </policy/CMP0193>

@@ -351,12 +351,6 @@ endif()
 # capabilities and parent project's request.  Enforce 0/1 as only
 # possible values for configuration into Configure.hxx.
 
-if(KWSYS_USE_Encoding)
-  # Look for type size helper macros.
-  KWSYS_PLATFORM_CXX_TEST(KWSYS_STL_HAS_WSTRING
-    "Checking whether wstring is available" DIRECT)
-endif()
-
 if(KWSYS_NAMESPACE MATCHES "^kwsys$")
   set(KWSYS_NAME_IS_KWSYS 1)
 else()
@@ -774,7 +768,7 @@ if(KWSYS_C_SRCS OR KWSYS_CXX_SRCS)
 
   if(KWSYS_USE_SystemInformation)
     if(WIN32)
-      target_link_libraries(${KWSYS_TARGET_INTERFACE} ${KWSYS_LINK_DEPENDENCY} ws2_32)
+      target_link_libraries(${KWSYS_TARGET_INTERFACE} ${KWSYS_LINK_DEPENDENCY} ws2_32 powrprof)
       # link in dbghelp.dll for symbol lookup if MSVC 1800 or later
       # Note that the dbghelp runtime is part of MS Windows OS
       if(MSVC_VERSION AND NOT MSVC_VERSION VERSION_LESS 1800)
@@ -953,12 +947,8 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
       testCommandLineArguments.cxx
       testCommandLineArguments1.cxx
       testDirectory.cxx
+      testEncoding.cxx
       )
-    if(KWSYS_STL_HAS_WSTRING)
-      set(KWSYS_CXX_TESTS ${KWSYS_CXX_TESTS}
-        testEncoding.cxx
-        )
-    endif()
     if(KWSYS_USE_FStream)
       set(KWSYS_CXX_TESTS ${KWSYS_CXX_TESTS}
         testFStream.cxx

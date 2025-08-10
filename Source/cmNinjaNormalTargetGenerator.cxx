@@ -356,8 +356,7 @@ void cmNinjaNormalTargetGenerator::WriteNvidiaDeviceLinkRule(
 
     auto rulePlaceholderExpander =
       this->GetLocalGenerator()->CreateRulePlaceholderExpander(
-        cmBuildStep::Link, this->GetGeneratorTarget(),
-        this->TargetLinkLanguage(config));
+        cmBuildStep::Link);
 
     // Rule for linking library/executable.
     std::vector<std::string> linkCmds = this->ComputeDeviceLinkCmd();
@@ -424,8 +423,7 @@ void cmNinjaNormalTargetGenerator::WriteDeviceLinkRules(
     "CMAKE_CUDA_DEVICE_LINK_COMPILE");
   auto rulePlaceholderExpander =
     this->GetLocalGenerator()->CreateRulePlaceholderExpander(
-      cmBuildStep::Link, this->GetGeneratorTarget(),
-      this->TargetLinkLanguage(config));
+      cmBuildStep::Link);
   rulePlaceholderExpander->ExpandRuleVariables(this->GetLocalGenerator(),
                                                compileCmd, vars);
 
@@ -584,8 +582,7 @@ void cmNinjaNormalTargetGenerator::WriteLinkRule(
 
     auto rulePlaceholderExpander =
       this->GetLocalGenerator()->CreateRulePlaceholderExpander(
-        cmBuildStep::Link, this->GetGeneratorTarget(),
-        this->TargetLinkLanguage(config));
+        cmBuildStep::Link);
 
     // Rule for linking library/executable.
     std::vector<std::string> linkCmds = this->ComputeLinkCmd(config);
@@ -844,8 +841,9 @@ void cmNinjaNormalTargetGenerator::WriteDeviceLinkStatement(
     this->Makefile->GetSafeDefinition("CMAKE_CUDA_OUTPUT_EXTENSION");
 
   std::string targetOutputDir =
-    cmStrCat(this->GetLocalGenerator()->GetTargetDirectory(genTarget),
-             globalGen->ConfigDirectory(config), '/');
+    this->GetLocalGenerator()->MaybeRelativeToTopBinDir(
+      cmStrCat(genTarget->GetSupportDirectory(),
+               globalGen->ConfigDirectory(config), '/'));
   targetOutputDir = globalGen->ExpandCFGIntDir(targetOutputDir, config);
 
   std::string targetOutputReal =
@@ -980,8 +978,9 @@ void cmNinjaNormalTargetGenerator::WriteNvidiaDeviceLinkStatement(
 
   if (config != fileConfig) {
     std::string targetOutputFileConfigDir =
-      cmStrCat(this->GetLocalGenerator()->GetTargetDirectory(genTarget),
-               globalGen->ConfigDirectory(fileConfig), '/');
+      this->GetLocalGenerator()->MaybeRelativeToTopBinDir(
+        cmStrCat(genTarget->GetSupportDirectory(),
+                 globalGen->ConfigDirectory(config), '/'));
     targetOutputFileConfigDir =
       globalGen->ExpandCFGIntDir(outputDir, fileConfig);
     if (outputDir == targetOutputFileConfigDir) {
@@ -1448,6 +1447,14 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
     }
   }
 
+  // If we have any PRE_LINK commands, we need to go back to CMAKE_BINARY_DIR
+  // for the link commands.
+  if (!preLinkCmdLines.empty()) {
+    std::string const homeOutDir = localGen.ConvertToOutputFormat(
+      localGen.GetBinaryDirectory(), cmOutputConverter::SHELL);
+    preLinkCmdLines.push_back("cd " + homeOutDir);
+  }
+
   // maybe create .def file from list of objects
   cmGeneratorTarget::ModuleDefinitionInfo const* mdi =
     gt->GetModuleDefinitionInfo(config);
@@ -1487,13 +1494,6 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
     for (cmSourceFile const* src : mdi->Sources) {
       fout << src->GetFullPath() << "\n";
     }
-  }
-  // If we have any PRE_LINK commands, we need to go back to CMAKE_BINARY_DIR
-  // for the link commands.
-  if (!preLinkCmdLines.empty()) {
-    std::string const homeOutDir = localGen.ConvertToOutputFormat(
-      localGen.GetBinaryDirectory(), cmOutputConverter::SHELL);
-    preLinkCmdLines.push_back("cd " + homeOutDir);
   }
 
   vars["PRE_LINK"] = localGen.BuildCommandLine(

@@ -133,13 +133,16 @@ Exporting Targets to the |CPS|
 .. code-block:: cmake
 
   export(EXPORT <export-name> PACKAGE_INFO <package-name>
+         [PROJECT <project-name>|NO_PROJECT_METADATA]
          [APPENDIX <appendix-name>]
          [LOWER_CASE_FILE]
          [VERSION <version>
           [COMPAT_VERSION <version>]
           [VERSION_SCHEMA <string>]]
          [DEFAULT_TARGETS <target>...]
-         [DEFAULT_CONFIGURATIONS <config>...])
+         [DEFAULT_CONFIGURATIONS <config>...]
+         [DESCRIPTION <project-description-string>]
+         [HOMEPAGE_URL <url-string>])
 
 .. versionadded:: 4.1
 .. note::
