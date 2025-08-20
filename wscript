@@ -20,16 +20,32 @@ def options(opt):
 
 def make_app_version(conf):
 
-    app_version = conf.makePak(
+    cmake_version = conf.makePak(
         variables={
             "PATH": {
                 'value': '${PREFIX}/bin',
-                'action': 'env_prp'
+                'action': 'env_app'
             }
         }
     )
 
-    return app_version
+    cmake_gui_version = conf.makePak(
+        name='cmake_gui_pak',
+        appName='cmake_gui',
+        variables={
+            "PATH": {
+                'value': '${PREFIX}/bin/cmake_gui',
+                'action': 'env_app'
+            }
+        },
+        requires={
+            # These two come from VFX platform
+            "WetaVFXPlatform": {"ver_range": "2023<2024"},
+            "qt": {"ver_range": "|"},
+        }
+    )
+
+    return cmake_version, cmake_gui_version
 
 
 # ---------------------------------------------------<HELPERS | START CONFIGURE>
@@ -47,14 +63,19 @@ def configure(conf):
     # Make the pak
     make_app_version(conf)
 
-    for _ in conf.buildmatrix_make_variants('ABI', filter_variants=["L171"]):
+    for _ in conf.buildmatrix_make_variants('WetaVFXPlatform', filter_variants=["VP23"]):
 
         # Don't install into a variant specific dir
         conf.setVariantFolder("")
         requires = [
-            'gcc',              # Constrained by the ABI variant
-            'cmake-3.27<4',     # Building cmake with cmake!!
+            # CMake Toolchain
+            'gcc',              # Constrained by the VP variant
+            'cmake-4<5',        # Building cmake with cmake!!
+            'git-2.49.0<3',     # The system version of git will not work in the test environment.
             'ninja-1.10<2',
+
+            # cmake-ui dependency
+            'qt',               # Constrained by the VP variant
         ]
 
         # This must happen before any other env changes to avoid over writing.
@@ -78,6 +99,9 @@ def configure(conf):
             # Disabled as cmake itself does not follow its own best practice, and links to `ld` without finding it via
             # a package first.
             CMAKE_LINK_LIBRARIES_ONLY_TARGETS="Off",
+
+            # Build and install cmake-gui
+            BUILD_QtDialog="On",
         )
 
 
@@ -86,7 +110,7 @@ def configure(conf):
 
 def build(bld):
 
-    for _ in bld.iterVariants(category='ABI'):
+    for _ in bld.iterVariants(category='WetaVFXPlatform'):
 
         build_task = bld.cmakeBuild(
             name="build",
